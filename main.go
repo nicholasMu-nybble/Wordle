@@ -3,20 +3,21 @@ package main
 import (
 	"fmt"
 	"io"
+	"math/rand/v2"
 	"os"
 	"strings"
 )
 
 func readWords(path string) []string {
 	file, err := os.Open(path) // open file
-	if err != nil { // if error, return nil, print error
+	if err != nil {            // if error, return nil, print error
 		fmt.Println("Error opening file:", err)
 		return nil
 	}
 	defer file.Close() // close file AFTER function returns
 
 	data, err := io.ReadAll(file) // read the file into data
-	if err != nil { // error handling again
+	if err != nil {               // error handling again
 		fmt.Println("Error opening file:", err)
 		return nil
 	}
@@ -28,10 +29,9 @@ func readWords(path string) []string {
 
 func main() {
 	wordList := readWords("words.txt")
-	for _, value := range wordList {
-		fmt.Println(value)
-	}
-	fmt.Println(wordList[0])
+	// rand int for index and select it? be better in two lines maybe, but idc
+	answerWord := wordList[rand.IntN(len(wordList))]
+	fmt.Println(answerWord)
 }
 
 /*
