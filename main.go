@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"os"
 )
 
@@ -11,8 +12,15 @@ func readWords(path string) []string {
 		fmt.Println("Error opening file:", err)
 		return nil
 	}
+	defer file.Close() // close file AFTER function returns
 
-	fmt.Println("File opened:", file.Name()) // file objects have names
+	data, err := io.ReadAll(file) // read the file into data
+	if err != nil { // error handling again
+		fmt.Println("Error opening file:", err)
+		return nil
+	}
+
+	fmt.Println(string(data)) // convert to string and output
 	return nil // temp
 }
 
