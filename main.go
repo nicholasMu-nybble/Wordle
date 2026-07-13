@@ -1,9 +1,24 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
+
+func readWords(path string) []string {
+	file, err := os.Open(path) // open file
+	if err != nil { // if error, return nil, print error
+		fmt.Println("Error opening file:", err)
+		return nil
+	}
+
+	fmt.Println("File opened:", file.Name()) // file objects have names
+	return nil // temp
+}
 
 func main() {
-	fmt.Println("test")
+	readWords("words.txt")
+	readWords("wordsa.txt") // file fails to open
 }
 
 /*
@@ -13,6 +28,7 @@ randomly select a 5 letter word
 	save list of words in array, use for word checking too
 
 input 5 letter word
+	how take input? idk figure it out
 	early test: text boxes, check length
 	by end: input letters into boxes, preventing 6+ letters entirely
 		will need ui somehow idk how on go, but i'll figure it out
