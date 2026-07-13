@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 )
 
 func readWords(path string) []string {
@@ -20,13 +21,17 @@ func readWords(path string) []string {
 		return nil
 	}
 
-	fmt.Println(string(data)) // convert to string and output
-	return nil // temp
+	// parse data
+	output := strings.Split(string(data), "\n")
+	return output
 }
 
 func main() {
-	readWords("words.txt")
-	readWords("wordsa.txt") // file fails to open
+	wordList := readWords("words.txt")
+	for _, value := range wordList {
+		fmt.Println(value)
+	}
+	fmt.Println(wordList[0])
 }
 
 /*
