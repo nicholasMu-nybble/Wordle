@@ -86,9 +86,11 @@ func main() {
 	wordList := readWords("words.txt")
 	input := ""
 	guesses := 0
+	var accuracy [5]int
 	for {
 		// rand int for index and select it? be better in two lines maybe, but idc
 		answerWord := wordList[rand.IntN(len(wordList))]
+		guesses = 0
 		for ; guesses < 6; guesses++ {
 			// get word
 			for {
@@ -108,6 +110,22 @@ func main() {
 				// if all's good, go next
 				break
 			}
+
+			// check word correctness
+			accuracy = getWordCorrectness(input, answerWord)
+			for index, color := range accuracy {
+				switch color {
+					case 0:
+						printColorString(string(input[index]), "gray")
+					case 1:
+						printColorString(string(input[index]), "yellow")
+					case 2:
+						printColorString(string(input[index]), "green")
+				}
+			}
+			fmt.Println("")
+
+
 			if input == answerWord {
 				fmt.Println("Congratulations!")
 				break
