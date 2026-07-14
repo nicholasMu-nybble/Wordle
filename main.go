@@ -32,6 +32,26 @@ func readWords(path string) []string {
 	return output
 }
 
+func printColorString(letter string, color string) {
+	output := ""
+	color = strings.ToLower(color)
+	switch color {
+		case "red":
+			output += "\033[31m"
+		case "yellow":
+			output += "\033[33m"
+		case "green":
+			output += "\033[32m"
+		case "gray", "grey":
+			output += "\033[90m"
+		case "white":
+			output += "\033[97m"
+	}
+	output += letter
+	output += "\033[0m"
+	fmt.Print(output)
+}
+
 func main() {
 	wordList := readWords("words.txt")
 	input := ""
@@ -39,20 +59,23 @@ func main() {
 	for {
 		// rand int for index and select it? be better in two lines maybe, but idc
 		answerWord := wordList[rand.IntN(len(wordList))]
-
 		for ; guesses < 6; guesses++ {
+			// get word
 			for {
 				fmt.Println("Please enter a 5 letter word.")
 				fmt.Scanln(&input)
 				input = strings.TrimSpace(input)
+				// check length
 				if len(input) != 5 {
 					fmt.Println("Word is wrong length, try again")
 					continue
 				}
+				// check validity
 				if !slices.Contains(wordList, input) {
 					fmt.Println(input, "is not a valid word. Try again.")
 					continue
 				}
+				// if all's good, go next
 				break
 			}
 			if input == answerWord {
