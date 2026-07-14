@@ -29,9 +29,25 @@ func readWords(path string) []string {
 
 func main() {
 	wordList := readWords("words.txt")
-	// rand int for index and select it? be better in two lines maybe, but idc
-	answerWord := wordList[rand.IntN(len(wordList))]
-	fmt.Println(answerWord)
+	input := ""
+	for {
+		// rand int for index and select it? be better in two lines maybe, but idc
+		answerWord := wordList[rand.IntN(len(wordList))]
+
+		// game over
+		fmt.Println("The answer was", answerWord)
+		for {
+			fmt.Println("Would you like to play again? (y/n)")
+			fmt.Scanln(&input) // interesting, pass a pointer to the output string
+			if (input == "y" || input == "n") {
+				break
+			}
+			fmt.Println("Invalid input, try again.")
+		}
+		if input == "n" {
+			break
+		}
+	}
 }
 
 /*
