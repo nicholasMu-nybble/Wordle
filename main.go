@@ -5,6 +5,7 @@ import (
 	"io"
 	"math/rand/v2"
 	"os"
+	"slices"
 	"strings"
 )
 
@@ -24,22 +25,48 @@ func readWords(path string) []string {
 
 	// parse data
 	output := strings.Split(string(data), "\n")
+	for index := range output {
+		// removes the \r from everything
+		output[index] = strings.TrimSpace(output[index])
+	}
 	return output
 }
 
 func main() {
 	wordList := readWords("words.txt")
 	input := ""
+	guesses := 0
 	for {
 		// rand int for index and select it? be better in two lines maybe, but idc
 		answerWord := wordList[rand.IntN(len(wordList))]
+
+		for ; guesses < 6; guesses++ {
+			for {
+				fmt.Println("Please enter a 5 letter word.")
+				fmt.Scanln(&input)
+				input = strings.TrimSpace(input)
+				if len(input) != 5 {
+					fmt.Println("Word is wrong length, try again")
+					continue
+				}
+				if !slices.Contains(wordList, input) {
+					fmt.Println(input, "is not a valid word. Try again.")
+					continue
+				}
+				break
+			}
+			if input == answerWord {
+				fmt.Println("Congratulations!")
+				break
+			}
+		}
 
 		// game over
 		fmt.Println("The answer was", answerWord)
 		for {
 			fmt.Println("Would you like to play again? (y/n)")
 			fmt.Scanln(&input) // interesting, pass a pointer to the output string
-			if (input == "y" || input == "n") {
+			if input == "y" || input == "n" {
 				break
 			}
 			fmt.Println("Invalid input, try again.")
