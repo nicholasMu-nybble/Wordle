@@ -32,7 +32,7 @@ func readWords(path string) []string {
 	return output
 }
 
-func printColorString(letter string, color string) {
+func printColorString(strout string, color string) {
 	output := ""
 	color = strings.ToLower(color)
 	switch color {
@@ -47,9 +47,39 @@ func printColorString(letter string, color string) {
 		case "white":
 			output += "\033[97m"
 	}
-	output += letter
+	output += strout
 	output += "\033[0m"
 	fmt.Print(output)
+}
+
+func getWordCorrectness(guess string, correct string) [5]int {
+	// 2: green, 1: yellow, 0: gray
+	guess_letters := strings.Split(guess, "")
+	correct_letters := strings.Split(correct, "")
+	output := [5]int{0, 0, 0, 0, 0}
+	for index := range guess_letters {
+		// green O(n) (5 checks)
+		if guess_letters[index] == correct_letters[index] {
+			output[index] = 2
+			guess_letters[index] = ""
+			correct_letters[index] = " " // different as to not confuse yellow part
+		}
+	}
+
+	// yellow O(n^2) (25 checks)
+	for g := range guess_letters {
+		for c := range correct_letters {
+			if guess_letters[g] == correct_letters[c] {
+				output[g] = 1
+				guess_letters[g] = ""
+				correct_letters[c] = " "
+			}
+		}
+	}
+
+	// anything left will be gray
+
+	return output
 }
 
 func main() {
