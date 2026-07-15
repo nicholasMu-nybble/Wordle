@@ -32,24 +32,28 @@ func readWords(path string) []string {
 	return output
 }
 
-func printColorString(strout string, color string) {
+func getColorString(strout string, color string) string {
 	output := ""
 	color = strings.ToLower(color)
 	switch color {
-		case "red":
-			output += "\033[31m"
-		case "yellow":
-			output += "\033[33m"
-		case "green":
-			output += "\033[32m"
-		case "gray", "grey":
-			output += "\033[90m"
-		case "white":
-			output += "\033[97m"
+	case "red":
+		output += "\033[31m"
+	case "yellow":
+		output += "\033[33m"
+	case "green":
+		output += "\033[32m"
+	case "gray", "grey":
+		output += "\033[90m"
+	case "white":
+		output += "\033[97m"
 	}
 	output += strout
 	output += "\033[0m"
-	fmt.Print(output)
+	return output
+}
+
+func printColorString(strout string, color string) {
+	fmt.Print(getColorString(strout, color))
 }
 
 func getWordCorrectness(guess string, correct string) [5]int {
@@ -83,19 +87,49 @@ func getWordCorrectness(guess string, correct string) [5]int {
 }
 
 func main() {
+	// guess_words only contains words not in answer_words
 	answerWordList := readWords("answer_words.txt")
 	moreGuessWordList := readWords("guess_words.txt")
 	input := ""
+	wordHistory := ""
 	guesses := 0
+	allLetters := "qwertyuiopasdfghjklzxcvbnm"
 	var accuracy [5]int
+	var keyboardChecks [26]int
 	for {
 		// rand int for index and select it? be better in two lines maybe, but idc
 		answerWord := answerWordList[rand.IntN(len(answerWordList))]
 		guesses = 0
+		wordHistory = ""
+		clear(keyboardChecks[:])
 		for ; guesses < 6; guesses++ {
 			// get word
 			for {
-				fmt.Println("Please enter a 5 letter word.")
+				// fmt.Println("Please enter a 5 letter word.")
+
+				fmt.Print("\n\n\n\n\n\n\n\n")
+
+				// print remaining letters
+				for ind, letter := range allLetters {
+					switch keyboardChecks[ind] {
+					case 0:
+						printColorString(string(letter), "white")
+					case 1:
+						printColorString(string(letter), "gray")
+					case 2:
+						printColorString(string(letter), "yellow")
+					case 3:
+						printColorString(string(letter), "green")
+					}
+					// fmt.Print(string(letter))
+					if letter == 'p' || letter == 'l' || letter == 'm' {
+						fmt.Print("\n")
+					}
+				}
+				fmt.Print("\n")
+
+				fmt.Print(wordHistory)
+
 				fmt.Scanln(&input)
 				input = strings.TrimSpace(input)
 				// check length
@@ -115,23 +149,30 @@ func main() {
 			// check word correctness
 			accuracy = getWordCorrectness(input, answerWord)
 			for index, color := range accuracy {
+				letterIndex := strings.Index(allLetters, string(input[index]))
 				switch color {
-					case 0:
-						printColorString(string(input[index]), "gray")
-					case 1:
-						printColorString(string(input[index]), "yellow")
-					case 2:
-						printColorString(string(input[index]), "green")
+				case 0:
+					wordHistory += getColorString(string(input[index]), "gray")
+					keyboardChecks[letterIndex] = max(keyboardChecks[letterIndex], 1)
+				case 1:
+					wordHistory += getColorString(string(input[index]), "yellow")
+					keyboardChecks[letterIndex] = max(keyboardChecks[letterIndex], 2)
+				case 2:
+					wordHistory += getColorString(string(input[index]), "green")
+					keyboardChecks[letterIndex] = max(keyboardChecks[letterIndex], 3)
 				}
 			}
-			fmt.Println("")
-
+			wordHistory += "\n"
 
 			if input == answerWord {
 				fmt.Println("Congratulations!")
 				break
 			}
 		}
+
+		fmt.Print("\n\n\n\n\n\n\n\n")
+
+		fmt.Print(wordHistory)
 
 		// game over
 		fmt.Println("The answer was", answerWord)
