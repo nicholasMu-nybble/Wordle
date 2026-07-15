@@ -83,13 +83,14 @@ func getWordCorrectness(guess string, correct string) [5]int {
 }
 
 func main() {
-	wordList := readWords("words.txt")
+	answerWordList := readWords("answer_words.txt")
+	moreGuessWordList := readWords("guess_words.txt")
 	input := ""
 	guesses := 0
 	var accuracy [5]int
 	for {
 		// rand int for index and select it? be better in two lines maybe, but idc
-		answerWord := wordList[rand.IntN(len(wordList))]
+		answerWord := answerWordList[rand.IntN(len(answerWordList))]
 		guesses = 0
 		for ; guesses < 6; guesses++ {
 			// get word
@@ -103,7 +104,7 @@ func main() {
 					continue
 				}
 				// check validity
-				if !slices.Contains(wordList, input) {
+				if !slices.Contains(moreGuessWordList, input) && !slices.Contains(answerWordList, input) {
 					fmt.Println(input, "is not a valid word. Try again.")
 					continue
 				}
