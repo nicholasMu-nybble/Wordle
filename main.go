@@ -1,3 +1,7 @@
+/*
+	Made by nicholas mueller (nicholasMu-nybble)
+*/
+
 package main
 
 import (
@@ -36,16 +40,16 @@ func getColorString(strout string, color string) string {
 	output := ""
 	color = strings.ToLower(color)
 	switch color {
-	case "red":
-		output += "\033[31m"
-	case "yellow":
-		output += "\033[33m"
-	case "green":
-		output += "\033[32m"
-	case "gray", "grey":
-		output += "\033[90m"
-	case "white":
-		output += "\033[97m"
+		case "red":
+			output += "\033[31m"
+		case "yellow":
+			output += "\033[33m"
+		case "green":
+			output += "\033[32m"
+		case "gray", "grey":
+			output += "\033[90m"
+		case "white":
+			output += "\033[97m"
 	}
 	output += strout
 	output += "\033[0m"
@@ -72,7 +76,13 @@ func getWordCorrectness(guess string, correct string) [5]int {
 
 	// yellow O(n^2) (25 checks)
 	for g := range guess_letters {
+		if guess_letters[g] == "" {
+			continue
+		}
 		for c := range correct_letters {
+			if correct_letters[c] == " " {
+				continue
+			}
 			if guess_letters[g] == correct_letters[c] {
 				output[g] = 1
 				guess_letters[g] = ""
@@ -153,19 +163,17 @@ func main() {
 				switch color {
 				case 0:
 					wordHistory += getColorString(string(input[index]), "gray")
-					keyboardChecks[letterIndex] = max(keyboardChecks[letterIndex], 1)
 				case 1:
 					wordHistory += getColorString(string(input[index]), "yellow")
-					keyboardChecks[letterIndex] = max(keyboardChecks[letterIndex], 2)
 				case 2:
 					wordHistory += getColorString(string(input[index]), "green")
-					keyboardChecks[letterIndex] = max(keyboardChecks[letterIndex], 3)
 				}
+				keyboardChecks[letterIndex] = max(keyboardChecks[letterIndex], color + 1)
 			}
 			wordHistory += "\n"
 
 			if input == answerWord {
-				fmt.Println("Congratulations!")
+				// fmt.Println("Congratulations!")
 				break
 			}
 		}
@@ -189,29 +197,3 @@ func main() {
 		}
 	}
 }
-
-/*
-randomly select a 5 letter word
-	from words.txt
-	gotta find out file parsing and rng in go
-	save list of words in array, use for word checking too
-
-input 5 letter word
-	how take input? idk figure it out
-	early test: text boxes, check length
-	by end: input letters into boxes, preventing 6+ letters entirely
-		will need ui somehow idk how on go, but i'll figure it out
-	check that it's actually a word
-
-display word
-
-show status of each letter
-	check for greens, then yellows, anything else is gray
-	temporary array, remove letters when found to avoid duplicates when no duplicates
-
-track status of each letter
-	array of ints? 0 unchecked, 1 gray, 2 yellow, 3 green?
-
-limit to 6 words, then show word
-	track turn number
-*/
